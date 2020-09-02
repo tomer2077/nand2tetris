@@ -1,0 +1,317 @@
+class Game {
+
+    field Grid          grid;
+    field Array         landedPieces;
+    field TetrisPiece   currentPiece;
+    field int           numLandedPiecesPoints;
+    field int           score;
+    field int           key;
+    field int           direction;
+    field Point         spawnPoint;
+    field Point         floorPosition;
+    field Point         rightBorderPoint;
+    field Point         leftBorderPoint;
+    // field int i;
+
+
+    // symbolic names for directions
+    field int down;
+    field int left;
+    field int right;
+
+    constructor Game new() {
+        var int i;
+        
+        let grid                  = Grid.new();
+        let landedPieces          = Array.new(200);
+
+        let numLandedPiecesPoints = 0;
+        let score                 = 0;
+        let key                   = Keyboard.keyPressed();
+
+        let spawnPoint            = grid.getPosition(5, 0);
+        let floorPosition         = grid.getPosition(0, 19);
+        let rightBorderPoint      = grid.getPosition(9, 0);
+        let leftBorderPoint       = grid.getPosition(0,0);
+
+        let currentPiece          = TetrisPiece.new(spawnPoint, 0);
+        // let floorPosition = Point.new(1,1)
+
+        let down = 0;
+        let left = 1;
+        let right = 2;
+        let i = 0;
+        while (i < 200) {
+            let landedPieces[i] = Point.new(1,1);
+            let i = i + 1;
+        }
+
+        // do spawnPiece();
+        do grid.drawBorder();
+        do Sys.wait(500);
+        do printScore();
+        do showNext();
+        return this;
+    }
+
+    method void printScore() {
+        // var String strvar;
+        do Output.moveCursor(3, 40);
+        do printStringConst("Score: ");
+        do Output.printInt(score);
+        do Output.moveCursor(0, 0);
+        // do strvar.dispose();
+        return;
+    }
+    
+    method void raiseScore() {
+        let score = score + 10;
+        return;
+    }
+
+    method void showNext() {
+        // var String nextStr;
+        var int topStartX;
+        var int topStartY;
+        var int topEndX;
+        var int topEndY;
+        var int rightEndX;
+        var int rightEndY;
+        var int bottomEndX;
+        var int bottomEndY;
+        // let nextStr = "Next:";
+        let topStartX = 320;
+        let topStartY = 80;
+        let topEndX = 320 + 60;
+        let topEndY = 80;
+        let rightEndX = topEndX;
+        let rightEndY = topEndY + 60;
+        let bottomEndX = rightEndX - 60;
+        let bottomEndY = rightEndY;
+        
+
+        do Output.moveCursor(6, 40);
+        do printStringConst("Next:");
+        do Output.moveCursor(0, 0);
+
+        do Screen.drawLine(topStartX, topStartY, topEndX, topEndY);
+        do Screen.drawLine(topEndX, topEndY, rightEndX, rightEndY);
+        do Screen.drawLine(rightEndX, rightEndY, bottomEndX, bottomEndY);
+        do Screen.drawLine(bottomEndX, bottomEndY, topStartX, topEndY);
+        // do nextStr.dispose();
+        return;
+    }
+
+    method void game_loop() {
+        var int t;
+        var int ms;
+        
+        while (~(1 = 0)) {
+            let ms = 100;
+            let t = 0;
+
+            while (t < 5) {
+
+                let t = t + 1;
+                let key = Keyboard.keyPressed();
+                // if (~(key = 0)) {
+                if (key = 130) {
+                    if ((willCollide() = false) & (reachedHorizontalBorder() = false)) { do currentPiece.moveDown(left); }
+                }   // left arrow
+                if (key = 132) {
+                    if ((willCollide() = false) & (reachedHorizontalBorder() = false)) { do currentPiece.moveDown(right); }
+                }   // right arrow
+                if (key = 133) { // down
+                    // do currentPiece.moveDown(down);
+                    // if (willCollide() = false & ) { do currentPiece.moveDown(right); }
+                    if ((willCollide() = false) & (reachedFloor() =false)) {
+                        let ms = 1;
+                        do currentPiece.moveDown(down);
+                    }
+                }
+
+                   // down arrow
+                do Sys.wait(50);
+                // }
+                // move down
+
+                // if (reachedFloor() = false) {
+                //     do currentPiece.moveDown();
+                // }
+
+                // check if pieces will collide
+                
+            }
+
+            // changing key to 0 so that willCollide
+            // will check if moving downwards will cause collision
+            // because otherwise itll check for sideways
+            // and cuold detect itll collide and then stop mid-air
+            // to do: change will collide , willCollide(direction)
+            let key = 0;
+            if (reachedFloor() = true) {
+                do saveLandedPiece();
+                do currentPiece.moveWithoutErasing(spawnPoint);
+            }
+            if (willCollide() = true) {
+                do saveLandedPiece();
+                do currentPiece.moveWithoutErasing(spawnPoint);
+            }
+            if (reachedFloor() = false) {
+                do currentPiece.moveDown(down);
+            }
+            
+            // do currentPiece.
+            do Sys.wait(ms);
+        }
+        return;
+    }
+
+    method void printLandedPoints() {
+
+        var int     i;
+        var Point   p;
+
+        let i = 0;
+
+        while (i < numLandedPiecesPoints)
+        {
+            let p = landedPieces[i];
+            do p.print();
+            do Output.println();
+            
+            let i = i + 1;
+        }
+        return;
+    }
+
+    method boolean areEqualPoints(Point a, Point b) {
+        if ((a.getX() = b.getX()) & (a.getY() = b.getY()))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    method boolean willCollide() {
+        // only checks colliding down rn
+        var Array nextPoints;
+        var Point p1;
+        var Point p2;
+        var int   i;
+        var int   j;
+
+        let nextPoints = currentPiece.getPoints();
+
+        // make a copy of currentPiece's position, and modify
+        // copy's positions to what they'd be if currentPiece will move
+        let i = 0;
+        while (i < 4)
+        {
+            let p1 = nextPoints[i];
+
+            if (key = 130) { do p1.set(p1.getX() - 10, p1.getY()); } // left
+            if (key = 132) { do p1.set(p1.getX() + 10, p1.getY()); } // right
+            if (~(key = 130)) { do p1.set(p1.getX(), p1.getY() + 10); }
+            let nextPoints[i] = p1;
+            let i = i + 1;
+        }
+
+        let i = 0;
+        let j = 0;
+
+        while (i < 4) {
+
+            let p1 = nextPoints[i];
+
+            while (j < numLandedPiecesPoints) {
+
+                let p2 = landedPieces[j];
+                if (areEqualPoints(p1, p2) = true) {
+                    if (key = 130) { do p1.set(p1.getX() + 10, p1.getY()); } // left
+                    if (key = 132) { do p1.set(p1.getX() - 10, p1.getY()); } // right
+                    if (~(key = 130)) { do p1.set(p1.getX(), p1.getY() - 10); }
+                    return true;
+                }
+                let j = j + 1;
+            }
+            let j = 0;
+            let i = i + 1;
+        }
+        if (key = 130) { do p1.set(p1.getX() + 10, p1.getY()); } // left
+        if (key = 132) { do p1.set(p1.getX() - 10, p1.getY()); } // right
+        if (~(key = 130)) { do p1.set(p1.getX(), p1.getY() - 10); }
+        return false;
+    }
+
+    method void spawnPiece() {
+        do currentPiece.dispose();
+        let currentPiece = TetrisPiece.new(grid.getPosition(5, 0), 0);
+        return;
+    }
+
+    method void saveLandedPiece() {
+
+        var Array landedPiecePoints;
+        var int i;
+
+        let landedPiecePoints = currentPiece.getPoints();
+        let i = 0;
+
+        while (i < 4)
+        {
+            let landedPieces[numLandedPiecesPoints] = landedPiecePoints[i];
+            let numLandedPiecesPoints = numLandedPiecesPoints + 1;
+            let i = i + 1;
+        }
+        do landedPiecePoints.dispose();
+        return;
+    }
+
+    method void printStringConst(String str) {
+        do Output.printString(str);
+        do str.dispose();
+        return;
+    }
+
+    method boolean reachedFloor() {
+        var Array blocks;
+        var Square square;
+        var int i;
+
+        let blocks = currentPiece.getBlocks();
+        let i = 0;
+
+        // check if any parts of the piece reached floor row
+        while (i < 4) {
+            let square = blocks[i];
+            if (square.getY() = floorPosition.getY()) {
+                return true;
+            }
+            let i = i + 1;
+        }
+        return false;
+    }
+
+    method boolean reachedHorizontalBorder() {
+        var Array blocks;
+        var Square square;
+        var int i;
+
+        let blocks = currentPiece.getBlocks();
+        let i = 0;
+
+        // check if any parts of the piece reached floor row
+        while (i < 4) {
+            let square = blocks[i];
+            if (square.getX() = leftBorderPoint.getX()) {
+                return true;
+            }
+            if ((square.getX() + 10) = (rightBorderPoint.getX() + 10)) {
+                return true;
+            }
+            let i = i + 1;
+        }
+        return false;
+    }
+}

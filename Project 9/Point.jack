@@ -1,0 +1,40 @@
+class Point {
+    
+    field int x;
+    field int y;
+
+    constructor Point new(int Ax, int Ay) {
+        let x = Ax;
+        let y = Ay;
+        return this;
+    }
+
+    method int getX() {
+        return x;
+    }
+
+    method int getY() {
+        return y;
+    }
+
+    method void set(int newX, int newY) {
+        let x = newX;
+        let y = newY;
+        return;
+    }
+
+    method void print() {
+        // do Output.printString("(");
+        // do Output.printInt(getX());
+        // do Output.printString(", ");
+        // do Output.printInt(getY());
+        // do Output.printString(")");
+        // do Output.println();
+        return;
+    }
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+}

@@ -1,0 +1,83 @@
+class Grid {
+
+    field int borderSize;
+    field int cell;
+    field int columns;
+    field int rows;
+    field int gap;
+    field int x, y;
+    field int width, height;
+    
+    // field Array rows;
+
+    constructor Grid new() {
+        var int screenHeight, screenWidth;
+
+        let screenWidth  = 512;
+        let screenHeight = 256;
+        let borderSize   = 1;
+        let cell         = 10;
+        let columns      = 10;
+        let rows         = 20;
+        let gap          = 1;
+
+
+        
+        // gridWidth, gridHeight
+        let width  = cell * columns; // gap between every cell--9 gaps
+        let height = cell * rows;
+
+        // (x,y) positioned so that the grid will bein the center
+        // screenW / screenH - gridW / gridH - 1
+        let x = (screenWidth / 2) - (width / 2) - 1;
+        let y = (screenHeight / 2) - (height / 2) - 1;
+        // let rows = Array.new(15);
+        // do Grid.fill_with_arrays(rows, 15, 10);
+        
+        return this;
+    }
+
+    method int get_gap_size() {
+        var int g;
+        let g = gap;
+        return g;
+    }
+
+    function int getCellSize() {
+        return 10;
+    }
+
+    method int get_cell() {
+        var int c;
+        let c = cell;
+        return c;
+    }
+
+    method Point getPosition(int column, int row) {
+        var int result_x;
+        var int result_y;
+        let result_x = x + Math.multiply(cell, column);
+        let result_y = y + Math.multiply(cell, row);
+        return Point.new(result_x, result_y);
+    }
+
+    method void drawBorder() {
+
+        var int border_start_x; var int border_end_x;
+        var int border_start_y; var int border_end_y;
+        
+        
+        let border_start_x = x - 2;
+        let border_start_y = y - 2;
+
+        
+        let border_end_x = x + width + 1;
+        let border_end_y = y + height + 1;
+
+        do Screen.drawLine(border_start_x, border_start_y, border_end_x, border_start_y);
+        do Screen.drawLine(border_end_x, border_start_y, border_end_x, border_end_y);
+        do Screen.drawLine(border_end_x, border_end_y, border_start_x, border_end_y);
+        do Screen.drawLine(border_start_x, border_end_y, border_start_x, border_start_y);
+        return;
+    }
+}

@@ -1,0 +1,200 @@
+class TetrisPiece {
+
+    field   String  type; // cube, long, step, pipe
+    field   Array   blocks;
+    field   Point   position;
+    field   int     cellSize;
+
+    // symbolic names for directions
+    field int down;
+    field int left;
+    field int right;
+
+    constructor TetrisPiece new(Point p, int Atype) {
+        // var String X; let X = "long";
+        
+        let position = p;
+
+        let blocks = Array.new(4);
+
+        let type = Atype;
+
+        let cellSize = 10;
+
+        let down = 0;
+        let left = 1;
+        let right = 2;
+        
+
+        // do Output.printString(type);
+        // if (type = 1) {
+        //     // do Output.printString("LONG");
+        //     do fillLong();
+        // }
+        if (type = 0) {
+            // do Output.printString("NOT LONG");
+            do fillLong();
+        }
+        // do X.dispose();
+        return this;
+    }
+
+    method void print() {
+        // do Output.printString("Position: (");
+        // do Output.printInt(position.getX());
+        // do Output.printString(", ");
+        // do Output.printInt(position.getY());
+        // do Output.printChar(")");
+        // do Output.println();
+        return;
+    }
+
+    method Array getPoints() {
+        var Array points;
+        var int i;
+        var Square square;
+        let points = Array.new(4);
+        let i = 0;
+        while (i < 4) {
+            let square = blocks[i];
+            let points[i] = square.getPoint();
+            let i = i + 1;
+        }
+        return points;
+        
+    }
+
+    // method bool reached_floor() {
+        
+    // }
+
+    method void printAllBlocks() {
+        var Square s;
+        var int i; let i = 0;
+        while (i < 4) {
+            let s = blocks[i];
+            do s.print();
+            let i = i + 1;
+        }
+        return;
+    }
+
+    method void moveDown(int direction) {
+        var Square s;
+        var int i;
+
+        // let s = blocks[3];
+        // if ((do s.getY()) + cellSize )
+        let i = 0;
+        while (i < 4) {
+            let s = blocks[i];
+            do s.erase();
+            // do Sys.wait(5);
+            let i = i + 1;
+            // let blocks[i] = s;
+        }
+        let i = 0;
+        while (i < 4) {
+            let s = blocks[i];
+            if (direction = left)  { do s.moveLeft(); }
+            if (direction = right) { do s.moveRight(); }
+            if (direction = down)  { do s.moveDown(); }
+            // do s.moveDown();
+            // do Sys.wait(5);
+            let i = i + 1;
+            // let blocks[i] = s;
+        }
+        // do s.dispose();
+        return;
+    }
+
+    method void moveWithoutErasing(Point point) {
+        var Square square;
+        var int x, y;
+        var int i;
+
+        let x = point.getX();
+        let y = point.getY();
+        let i = 0;
+
+        while (i < 4)
+        {
+            let square = blocks[i];
+            do square.setPosition(x, y);
+            do square.draw();
+
+            let y = y + 10;
+            let i = i + 1;
+        }
+        return;
+    }
+
+    method Array getBlocks() {
+        return blocks;
+    }
+
+    method void fillLong() {
+        var int i;
+        var int x; var int y;
+        
+        let x = position.getX();
+        let y = position.getY();
+
+        let i = 0;
+        while (i < 4) {
+            let blocks[i] = Square.new(x, y, 10);
+            let y = y + cellSize;
+            let i = i + 1;
+        }
+        return;
+    }
+
+    method void draw() {
+
+        var Square square;
+
+        var int i;
+        let i = 0;
+        while (i < 4)
+        {
+            let square = blocks[i];
+            do square.draw();
+            let i = i + 1;
+        }
+        do square.dispose();
+        return;
+    }
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    // method int is_touching_floor() {
+    //     var Square square;
+    //     var int i;
+    //     let i = 0;
+    //     while (i < 4)
+    //     {
+    //         let square = blocks[i];
+    //         do square.draw();
+    //         let i = i + 1;
+    //     }
+    // }
+
+    // method void drawCube() {
+        
+    // }
+
+    // method void drawLong() {
+        
+    // }
+
+    // method void drawStep() {
+        
+    // }
+
+    // method void drawPipe() {
+        
+    // }
+}
